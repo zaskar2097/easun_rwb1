@@ -54,10 +54,34 @@ All options are set in the add-on's **Configuration** tab.
 | `override_substr` | Domains to redirect to the Pi (by substring). | `siseli` |
 | `dns_port` | Port the add-on listens on for DNS on the Pi (high port, so it doesn't take `53`). | `8553` |
 | `dns_upstream` | DNS to forward all other queries to. | `1.1.1.1` |
-| `refresh_interval` | Seconds between read requests to the dongle (0 = disabled). | `20` |
-| `report_period_ms` | Autonomous reporting period the add-on tells the dongle to use. | `60000` |
+| `refresh_interval` | *Pull* — seconds between active read requests the add-on sends to the dongle (0 = disabled). See below. | `20` |
+| `report_period_ms` | *Push* — autonomous reporting period the add-on tells the dongle to use. See below. | `60000` |
 | `dev_sn` | Your inverter's serial number, returned in the bootstrap. Set it to your own value (kept only in the local add-on options). | `<inverter-serial>` |
 | `log_level` | Log verbosity (`debug` helps on first boot). | `info` |
+
+### Reading cadence: `refresh_interval` vs `report_period_ms`
+
+The inverter data reaches Home Assistant through two independent mechanisms, and
+these two options control each one:
+
+- **`report_period_ms` — the dongle's autonomous push.** During the HTTP
+  bootstrap the add-on tells the dongle how often to report **on its own**
+  (`performanceReportPeriod`). The dongle then publishes a fresh reading every
+  `report_period_ms` milliseconds without anyone asking. It's the baseline
+  cadence and a safety net. Default `60000` (every 60 s).
+
+- **`refresh_interval` — the add-on's active pull.** Every `refresh_interval`
+  **seconds** the add-on sends the dongle a "refresh all" command
+  (`dev_rpc`), forcing an immediate reading. This is what makes the data update
+  faster than the autonomous period. Set it to `0` to disable the pull entirely
+  and rely only on the dongle's push.
+
+In practice: `refresh_interval` drives how fresh your sensors feel day to day;
+`report_period_ms` is the fallback rhythm underneath it. Lower values mean more
+frequent data but more Modbus traffic to the inverter and more MQTT messages —
+`20 s` pull / `60 s` push is a comfortable balance. If you only need occasional
+readings, raise both (e.g. `refresh_interval: 0` and `report_period_ms: 300000`
+for a reading every 5 minutes).
 
 ### Mosquitto: create the add-on user
 
