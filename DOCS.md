@@ -1,142 +1,143 @@
 # EASUN RWB1 Local Bridge
 
-Faz o teu inversor EASUN (dongle **RWB1** / cloud **Siseli**) funcionar **100 % local** no Home Assistant — sem cloud e sem internet. O add-on imita os serviços da cloud (DNS + bootstrap HTTP + broker) e publica os dados do inversor como sensores.
+Make your EASUN inverter (dongle **RWB1** / **Siseli** cloud) run **100 % locally** in Home Assistant — no cloud, no internet. The add-on emulates the cloud services (DNS + HTTP bootstrap + broker) and publishes the inverter data as sensors.
 
-## Como funciona
+## How it works
 
-O dongle, ao arrancar, precisa de 3 coisas da "cloud": resolver um domínio por **DNS**, fazer um **bootstrap HTTP** (hora + onde está o broker) e depois ligar-se por **MQTT**. Este add-on fornece as três, apontando o dongle ao teu Pi:
+On boot, the dongle needs 3 things from the "cloud": resolve a domain via **DNS**, perform an **HTTP bootstrap** (time + where the broker is) and then connect over **MQTT**. This add-on provides all three, pointing the dongle at your Pi:
 
 ```
-          ┌─ DNS  :8553 → responde "siseli" com o IP do Pi
-dongle ───┤  HTTP :80   → bootstrap (hora, nº série, broker = Pi)
-          └─ MQTT :1883  → Mosquitto; o add-on confirma as mensagens,
-                           descodifica o Modbus e cria os sensores no HA
+          ┌─ DNS  :8553 → answers "siseli" with the Pi's IP
+dongle ───┤  HTTP :80   → bootstrap (time, serial number, broker = Pi)
+          └─ MQTT :1883  → Mosquitto; the add-on acks the messages,
+                           decodes the Modbus and creates the sensors in HA
 ```
 
-Os dados nunca saem da tua rede.
+The data never leaves your network.
 
 ---
 
-## Pré-requisitos
+## Prerequisites
 
-1. **Add-on Mosquitto broker** instalado e a correr.
-2. O **dongle e o Pi na mesma sub-rede** (ex.: `192.168.10.x`).
-3. Uma forma de **encaminhar o DNS do dongle para o Pi** no router (ver secção "Router").
+1. **Mosquitto broker add-on** installed and running.
+2. The **dongle and the Pi on the same subnet** (e.g. `192.168.10.x`).
+3. A way to **redirect the dongle's DNS to the Pi** on the router (see the "Router" section).
 
 ---
 
-## Instalação (add-on local)
+## Installation (local add-on)
 
-1. Copia a pasta `easun_rwb1/` para `\addons\` do teu Home Assistant
-   (via o add-on *Samba share* ou *Terminal & SSH*; o caminho no disco é
+1. Copy the `easun_rwb1/` folder into your Home Assistant `\addons\` share
+   (via the *Samba share* or *Terminal & SSH* add-on; the on-disk path is
    `/addons/easun_rwb1/`).
-2. **Definições → Add-ons → Add-on Store → ⋮ → Check for updates.**
-   O add-on **EASUN RWB1 Local Bridge** aparece em *Local add-ons*.
-3. Abre-o e clica **Install** (a primeira compilação demora alguns minutos).
+2. **Settings → Add-ons → Add-on Store → ⋮ → Check for updates.**
+   The **EASUN RWB1 Local Bridge** add-on appears under *Local add-ons*.
+3. Open it and click **Install** (the first build takes a few minutes).
 
 ---
 
-## Configuração
+## Configuration
 
-Todas as opções se definem no separador **Configuration** do add-on.
+All options are set in the add-on's **Configuration** tab.
 
-| Opção | O que é | Valor típico |
+| Option | What it is | Typical value |
 |---|---|---|
-| `pi_ip` | IP do Pi na tua LAN. Deixa **vazio** para deteção automática. | `192.168.10.251` |
-| `mqtt_host` | Onde está o Mosquitto. | `127.0.0.1` |
-| `mqtt_port` | Porta do Mosquitto. | `1883` |
-| `mqtt_user` | **Utilizador** com que o add-on se liga ao Mosquitto. | ver abaixo |
-| `mqtt_password` | **Password** desse utilizador. | ver abaixo |
-| `override_substr` | Domínios a redirecionar para o Pi (por substring). | `siseli` |
-| `dns_port` | Porta onde o add-on ouve DNS no Pi (porta alta, para não ocupar o `53`). | `8553` |
-| `dns_upstream` | DNS para onde reencaminhar as outras perguntas. | `1.1.1.1` |
-| `refresh_interval` | Segundos entre pedidos de leitura ao dongle (0 = desliga). | `20` |
-| `report_period_ms` | Período de envio autónomo que o add-on diz ao dongle. | `60000` |
-| `dev_sn` | Nº de série devolvido no bootstrap (pode ficar o predefinido). | `REDACTED-SERIAL` |
-| `log_level` | Detalhe do log (`debug` ajuda no arranque). | `info` |
+| `pi_ip` | The Pi's IP on your LAN. Leave **empty** for auto-detection. | `192.168.10.251` |
+| `mqtt_host` | Where Mosquitto is. | `127.0.0.1` |
+| `mqtt_port` | Mosquitto's port. | `1883` |
+| `mqtt_user` | **Username** the add-on uses to connect to Mosquitto. | see below |
+| `mqtt_password` | **Password** for that user. | see below |
+| `override_substr` | Domains to redirect to the Pi (by substring). | `siseli` |
+| `dns_port` | Port the add-on listens on for DNS on the Pi (high port, so it doesn't take `53`). | `8553` |
+| `dns_upstream` | DNS to forward all other queries to. | `1.1.1.1` |
+| `refresh_interval` | Seconds between read requests to the dongle (0 = disabled). | `20` |
+| `report_period_ms` | Autonomous reporting period the add-on tells the dongle to use. | `60000` |
+| `dev_sn` | Serial number returned in the bootstrap (the default is fine). | `REDACTED-SERIAL` |
+| `log_level` | Log verbosity (`debug` helps on first boot). | `info` |
 
-### Mosquitto: criar o utilizador do add-on
+### Mosquitto: create the add-on user
 
-Em **Definições → Pessoas → Utilizadores**, cria um utilizador (ex.: `rwb1`) e usa
-esse nome/password em `mqtt_user` / `mqtt_password`. (O Mosquitto do HA aceita
-utilizadores do Home Assistant por predefinição.)
+In **Settings → People → Users**, create a user (e.g. `rwb1`) and use that
+name/password in `mqtt_user` / `mqtt_password`. (HA's Mosquitto accepts Home
+Assistant users by default.)
 
-### Mosquitto: aceitar o **dongle**
+### Mosquitto: accept the **dongle**
 
-O dongle liga-se ao Mosquitto com estas credenciais (fixas, do próprio dongle):
+The dongle connects to Mosquitto with these (fixed) credentials of its own:
 
-- **utilizador:** o teu *DtuID* (o número que aparece na app Siseli / interface do dongle)
-- **password:** o *hash* do dongle
+- **username:** your *DtuID* (the number shown in the Siseli app / the dongle's interface)
+- **password:** the dongle's *hash*
 
-Adiciona-as ao Mosquitto. No add-on **Mosquitto broker → Configuration**:
+Add them to Mosquitto. In the **Mosquitto broker → Configuration** add-on:
 
 ```yaml
 logins:
-  - username: "<O_TEU_DtuID>"
-    password: "<O_HASH_DO_DONGLE>"
+  - username: "<YOUR_DtuID>"
+    password: "<THE_DONGLE_HASH>"
 ```
 
-> Não sabes o hash? Com o add-on em `log_level: debug` e o dongle a tentar ligar,
-> o Mosquitto regista a tentativa de login com o utilizador (DtuID). Em último
-> caso, ativa temporariamente `anonymous: true` no Mosquitto só para arrancar.
+> Don't know the hash? With the add-on at `log_level: debug` and the dongle
+> trying to connect, Mosquitto logs the login attempt with the username (DtuID).
+> As a last resort, temporarily enable `anonymous: true` in Mosquitto just to get started.
 
 ---
 
-## Router — encaminhar o DNS do dongle para o Pi
+## Router — redirect the dongle's DNS to the Pi
 
-O dongle usa um **servidor DNS fixo** (ignora o DHCP), por isso é preciso desviar
-o DNS dele no router. Como no firmware original as regras não persistem, usa o
-teu mecanismo habitual (script em `/jffs/scripts/` reaplicado pelo Pi).
+The dongle uses a **fixed DNS server** (it ignores DHCP), so its DNS has to be
+redirected on the router. Since on the stock firmware the rules don't persist,
+use your usual mechanism (a script in `/jffs/scripts/` reapplied by the Pi).
 
-O dongle pergunta DNS na porta **53**, mas o add-on ouve numa **porta alta
-(`8553`)** para não ocupar o `53` no Pi. Por isso a regra do router reescreve o
-destino para `IP_PI:8553`.
+The dongle queries DNS on port **53**, but the add-on listens on a **high port
+(`8553`)** so it doesn't take `53` on the Pi. That's why the router rule rewrites
+the destination to `PI_IP:8553`.
 
-Regras a aplicar no router (substitui o IP do dongle e do Pi):
+Rules to apply on the router (replace the dongle's and the Pi's IP):
 
 ```sh
-iptables -t nat -A PREROUTING  -s <IP_DONGLE> -p udp --dport 53 -j DNAT --to-destination <IP_PI>:8553
-iptables -t nat -A POSTROUTING -d <IP_PI> -p udp --dport 8553 -j MASQUERADE
+iptables -t nat -A PREROUTING  -s <DONGLE_IP> -p udp --dport 53 -j DNAT --to-destination <PI_IP>:8553
+iptables -t nat -A POSTROUTING -d <PI_IP> -p udp --dport 8553 -j MASQUERADE
 ```
 
-Exemplo: `<IP_DONGLE>=192.168.10.134`, `<IP_PI>=192.168.10.251`.
+Example: `<DONGLE_IP>=192.168.10.134`, `<PI_IP>=192.168.10.251`.
 
-> Se mudares a opção `dns_port` no add-on, usa o mesmo valor nas duas regras.
+> If you change the `dns_port` option in the add-on, use the same value in both rules.
 
-> **Porquê só o DNS?** Depois de o DNS responder "siseli → IP do Pi", o dongle
-> liga-se ao Pi **diretamente** (mesma sub-rede) nas portas 80 e 1883, que o Pi
-> já serve. Não são precisas mais regras.
-
----
-
-## Arrancar e verificar
-
-1. Inicia o add-on e abre o separador **Log**. Deves ver `DNS a ouvir :8553`,
-   `HTTP a ouvir :80` e `MQTT ligado`.
-2. **Reinicia o dongle** (corta-lhe a energia ~30 s).
-3. No Log, por esta ordem: `HTTP checkin` → `HTTP findSingle` →
-   `HTTP servers/mqtt` → `Sensores publicados...`.
-4. Em **Definições → Dispositivos e Serviços → MQTT** aparece o dispositivo
-   **EASUN RWB1** com os sensores (bateria, PV, saída, potências, SOC…).
+> **Why only DNS?** Once DNS answers "siseli → Pi's IP", the dongle connects to
+> the Pi **directly** (same subnet) on ports 80 and 1883, which the Pi already
+> serves. No further rules are needed.
 
 ---
 
-## Resolução de problemas
+## Start and verify
 
-- **Sem `HTTP checkin` no log:** o DNS do dongle não está a chegar ao Pi.
-  Confirma as regras do router e que a porta 53 do Pi está acessível.
-- **Chega HTTP mas não há dados:** o dongle não está a ligar ao Mosquitto —
-  confirma o login do dongle no Mosquitto (secção acima).
-- **Sensores sem valores / a zero:** normal se o inversor tiver PV/rede
-  desligados; confirma a bateria e a saída, que estão sempre presentes.
-- **Porta 80 ocupada:** garante que não tens outro servidor HTTP no Pi. O DNS já
-  usa a porta alta `8553`, por isso não colide com um DNS no `53` (ex.: AdGuard).
-- **`DNS a ouvir` não aparece:** a `dns_port` pode estar ocupada; muda-a nas
-  opções e ajusta a regra do router em conformidade.
+1. Start the add-on and open the **Log** tab. You should see `DNS listening :8553`,
+   `HTTP listening :80` and `MQTT connected`.
+2. **Restart the dongle** (cut its power for ~30 s).
+3. In the Log, in this order: `HTTP checkin` → `HTTP findSingle` →
+   `HTTP servers/mqtt` → `Sensors published...`.
+4. Under **Settings → Devices & Services → MQTT** the **EASUN RWB1** device
+   appears with its sensors (battery, PV, output, power, SOC…).
 
 ---
 
-## Repor o funcionamento com a cloud
+## Troubleshooting
 
-Remove as regras do router (`-D` em vez de `-A`) e para o add-on. O dongle, ao
-reiniciar, volta a resolver os domínios reais e liga-se à cloud Siseli.
+- **No `HTTP checkin` in the log:** the dongle's DNS isn't reaching the Pi.
+  Check the router rules and that the Pi's DNS port is reachable.
+- **HTTP arrives but no data:** the dongle isn't connecting to Mosquitto —
+  check the dongle's login in Mosquitto (section above).
+- **Sensors with no values / zero:** normal if the inverter has PV/grid
+  disconnected; check the battery and the output, which are always present.
+- **Port 80 in use:** make sure no other HTTP server is running on the Pi. DNS
+  already uses the high port `8553`, so it doesn't clash with a DNS on `53`
+  (e.g. AdGuard).
+- **`DNS listening` doesn't appear:** `dns_port` may be in use; change it in the
+  options and adjust the router rule accordingly.
+
+---
+
+## Reverting to cloud operation
+
+Remove the router rules (`-D` instead of `-A`) and stop the add-on. On restart
+the dongle resolves the real domains again and connects to the Siseli cloud.

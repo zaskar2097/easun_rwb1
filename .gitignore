@@ -5,21 +5,21 @@ __pycache__/
 .venv/
 venv/
 
-# Home Assistant add-on runtime / dados locais
+# Home Assistant add-on runtime / local data
 /data/
 options.json
 
-# Capturas e logs de laboratório (não publicar)
+# Lab captures and logs (do not publish)
 *.log
 *.pcap
 mqtt_capture*
 *_capture*
 
-# Sistema
+# System
 .DS_Store
 Thumbs.db
 
-# Editores
+# Editors
 .idea/
 .vscode/
 *.swp

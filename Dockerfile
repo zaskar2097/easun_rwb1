@@ -3,7 +3,7 @@ FROM ${BUILD_FROM}
 
 ENV LANG=C.UTF-8 PYTHONUNBUFFERED=1
 
-# Python 3 + paho-mqtt. Tenta o pacote Alpine; se faltar, usa pip.
+# Python 3 + paho-mqtt. Try the Alpine package; fall back to pip if missing.
 RUN apk add --no-cache python3 \
  && ( apk add --no-cache py3-paho-mqtt \
       || ( apk add --no-cache py3-pip \

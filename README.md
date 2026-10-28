@@ -1,48 +1,48 @@
-# EASUN RWB1 Local Bridge (add-on local do Home Assistant)
+# EASUN RWB1 Local Bridge (Home Assistant local add-on)
 
-Lê o inversor EASUN (dongle **RWB1** / cloud **Siseli**) **100 % localmente**, sem
-cloud e sem internet, e publica os dados como sensores no Home Assistant.
+Read your EASUN inverter (dongle **RWB1** / **Siseli** cloud) **100 % locally**,
+with no cloud and no internet, and publish the data as sensors in Home Assistant.
 
-O add-on substitui os serviços da cloud de que o dongle depende no arranque:
+The add-on replaces the cloud services the dongle depends on at boot:
 
-- **DNS (:8553)** — responde aos domínios `*.siseli.com` com o IP do Pi
-  (porta alta para não ocupar o `53`; o router reescreve o `53` do dongle p/ `8553`).
-- **HTTP (:80)** — serve o bootstrap (`/dtu/checkin`, `/dtu/devices/findSingle`,
-  `/dtu/servers/mqtt`), apontando o broker ao Pi e fornecendo a hora.
-- **MQTT** — liga-se ao Mosquitto como cliente, confirma (ack) as mensagens do
-  dongle, descodifica as tramas **Modbus** (little-endian) e cria os sensores
-  via **MQTT discovery**.
+- **DNS (:8553)** — answers the `*.siseli.com` domains with the Pi's IP
+  (high port so it doesn't take `53`; the router rewrites the dongle's `53` to `8553`).
+- **HTTP (:80)** — serves the bootstrap (`/dtu/checkin`, `/dtu/devices/findSingle`,
+  `/dtu/servers/mqtt`), pointing the broker at the Pi and providing the time.
+- **MQTT** — connects to Mosquitto as a client, acks the dongle's messages,
+  decodes the **Modbus** frames (little-endian) and creates the sensors via
+  **MQTT discovery**.
 
-## Instalação rápida
+## Quick install
 
-1. Copia esta pasta para `/addons/easun_rwb1/` no Home Assistant.
-2. Add-on Store → *Check for updates* → instala **EASUN RWB1 Local Bridge**.
-3. Configura `mqtt_user`/`mqtt_password` (e vê o resto em **Documentation**).
-4. Configura o Mosquitto para aceitar o dongle e o router para desviar o DNS
-   do dongle para o Pi (passos detalhados na página **Documentation**/`DOCS.md`).
+1. Copy this folder to `/addons/easun_rwb1/` on Home Assistant.
+2. Add-on Store → *Check for updates* → install **EASUN RWB1 Local Bridge**.
+3. Configure `mqtt_user`/`mqtt_password` (see the rest under **Documentation**).
+4. Configure Mosquitto to accept the dongle and the router to redirect the
+   dongle's DNS to the Pi (detailed steps in the **Documentation** page / `DOCS.md`).
 
-As instruções completas, opções e resolução de problemas estão em **`DOCS.md`**
-(separador *Documentation* do add-on).
+Full instructions, options and troubleshooting are in **`DOCS.md`**
+(the add-on's *Documentation* tab).
 
-## Estrutura
+## Structure
 
 ```
 easun_rwb1/
-  config.yaml     # manifesto do add-on (portas, opções configuráveis)
-  build.yaml      # imagens base por arquitetura
+  config.yaml     # add-on manifest (ports, configurable options)
+  build.yaml      # base images per architecture
   Dockerfile      # Python 3 + paho-mqtt
-  app/service.py  # DNS + HTTP + cliente MQTT (acks, descodificação, discovery)
-  DOCS.md         # página de instruções
+  app/service.py  # DNS + HTTP + MQTT client (acks, decoding, discovery)
+  DOCS.md         # instructions page
   README.md
 ```
 
-> Versão 0.1.0 — baseada em captura e validação do protocolo real do RWB1.
-> Confirma o primeiro arranque pelo Log do add-on.
+> Version 0.1.0 — based on capture and validation of the real RWB1 protocol.
+> Check the first boot in the add-on Log.
 
-## Licença
+## License
 
-[MIT](LICENSE) © 2026 João Santos.
+[MIT](LICENSE) © 2026 zaskar2097.
 
-Projeto independente, sem qualquer afiliação com a EASUN ou a Siseli. O protocolo
-foi obtido por engenharia reversa do próprio dongle para fins de interoperabilidade
-e uso local. Usa por tua conta e risco.
+Independent project, not affiliated with EASUN or Siseli in any way. The protocol
+was obtained by reverse-engineering the dongle itself for interoperability and
+local use. Use at your own risk.
