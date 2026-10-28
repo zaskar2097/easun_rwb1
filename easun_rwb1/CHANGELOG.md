@@ -4,6 +4,11 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.1.6
+
+- New flat line-art icon and logo (a drawing of the RWB1 dongle, in EASUN
+  colours). The vector source is included as `icon.svg`.
+
 ## 0.1.5
 
 - Add this changelog, shown in the add-on update dialog.
