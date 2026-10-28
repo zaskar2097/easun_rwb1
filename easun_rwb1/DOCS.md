@@ -25,14 +25,18 @@ The data never leaves your network.
 
 ---
 
-## Installation (local add-on)
+## Installation (add-on repository)
 
-1. Copy the `easun_rwb1/` folder into your Home Assistant `\addons\` share
-   (via the *Samba share* or *Terminal & SSH* add-on; the on-disk path is
-   `/addons/easun_rwb1/`).
-2. **Settings → Add-ons → Add-on Store → ⋮ → Check for updates.**
-   The **EASUN RWB1 Local Bridge** add-on appears under *Local add-ons*.
-3. Open it and click **Install** (the first build takes a few minutes).
+1. **Settings → Add-ons → Add-on Store → ⋮ (top right) → Repositories** and add:
+   ```
+   https://github.com/zaskar2097/easun_rwb1
+   ```
+2. Close the dialog. The **EASUN RWB1 Local Bridge** add-on now shows in the
+   store (if not, ⋮ → *Check for updates*).
+3. Open it and click **Install** (the first build takes a few minutes, since it
+   is built locally for your architecture).
+
+To update later: push to the repo, then ⋮ → *Check for updates* → **Update**.
 
 ---
 
