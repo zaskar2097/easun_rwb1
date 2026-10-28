@@ -4,6 +4,10 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.1.7
+
+- Redraw the Wi-Fi symbol on the icon/logo as a proper symmetric fan.
+
 ## 0.1.6
 
 - New flat line-art icon and logo (a drawing of the RWB1 dongle, in EASUN
