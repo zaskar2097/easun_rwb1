@@ -4,6 +4,19 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.2.0
+
+- Decode all four Modbus blocks the dongle reports (`PS4Z`, `hIg6`, `Sgx0`,
+  `zsui`), not just the live one, and publish many more entities (34 total).
+- New **live reading**: inverter temperature (NTC), from the `Sgx0` block.
+- New **read-only settings & specs** (nominal ratings and charge/battery
+  setpoints: bulk/float/equalization/cut-off voltages, charge-current limits,
+  equalization timings…). These are published with `entity_category: diagnostic`
+  so Home Assistant shows them in a separate **Diagnostic** section, clearly
+  apart from the live readings. They are plain sensors — nothing on the inverter
+  can be changed from Home Assistant.
+- Register map confirmed against the Siseli cloud's own decoded output.
+
 ## 0.1.14
 
 - Fix the Restart button: the dtu_rpc command field `c` is a command-type code

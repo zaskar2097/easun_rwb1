@@ -177,6 +177,32 @@ Example: `<DONGLE_IP>=192.168.10.134`, `<PI_IP>=192.168.10.251`.
 
 ---
 
+## What you get (entities)
+
+The add-on decodes every block the dongle reports and publishes **read-only**
+sensors, split into two clearly separated groups:
+
+- **Live readings** — the real-time values, shown as normal sensors: working
+  state, PV voltage/power, grid voltage/frequency, battery voltage / SOC /
+  charge & discharge current, output voltage/frequency/apparent & active power,
+  load, and the **inverter temperature** (NTC).
+- **Settings & specs** — the inverter's nominal ratings (rated power, nominal
+  AC/battery voltage and current, rated output frequency…) and its battery /
+  charge setpoints (bulk / float / equalization / cut-off voltages, charge-
+  current limits, equalization timings, back-to-utility / back-to-battery
+  voltages). These are published with `entity_category: diagnostic`, so Home
+  Assistant lists them in a separate **Diagnostic** box on the device page,
+  apart from the live readings.
+
+> **Read-only by design.** Every entity is a plain `sensor`. This add-on only
+> *reads* the inverter — it never writes to it, so there is no entity that can
+> change a setting on the inverter from Home Assistant. The "settings" above are
+> shown for visibility only.
+
+> A few raw configuration registers whose meaning isn't confirmed yet
+> (some priority/battery-type flags, and the `zsui` block) are intentionally
+> **not** exposed, to avoid showing mislabelled values.
+
 ## Restarting the dongle from Home Assistant
 
 The add-on exposes a **Restart dongle** button on the **EASUN RWB1** device

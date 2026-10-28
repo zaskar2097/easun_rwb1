@@ -82,22 +82,51 @@ def decode_block(b64s):
     d = r[3:3 + r[2]]
     return [(d[i+1] << 8) | d[i] for i in range(0, len(d), 2)]
 
-# Dynamic block (PS4Z) map -> HA sensors.  (key, reg, factor, name, unit, device_class)
+# Register map -> HA sensors.  All entities are READ-ONLY (platform "sensor");
+# this add-on never writes/changes anything on the inverter.
+#   (key, block, reg, factor, name, unit, device_class, category)
+#   block    : which decoded Modbus block the register lives in (by its "cn").
+#   category : None     -> live reading  (shown as a normal sensor)
+#              "config" -> setting/spec  (read-only, HA "diagnostic" section)
 SENSORS = [
-    ("state",                   0, 1,   "State",               None,  None),
-    ("pv_voltage",              1, 0.1, "PV Voltage",          "V",   "voltage"),
-    ("grid_voltage",            2, 0.1, "Grid Voltage",        "V",   "voltage"),
-    ("grid_frequency",          3, 0.1, "Grid Frequency",      "Hz",  "frequency"),
-    ("pv_power",                4, 1,   "PV Power",            "W",   "power"),
-    ("battery_voltage",         5, 0.1, "Battery Voltage",     "V",   "voltage"),
-    ("battery_soc",             6, 1,   "Battery SOC",         "%",   "battery"),
-    ("battery_charge_current",  7, 1,   "Battery Charge Current",    "A", "current"),
-    ("battery_discharge_current",8,1,   "Battery Discharge Current", "A", "current"),
-    ("output_voltage",          9, 0.1, "Output Voltage",      "V",   "voltage"),
-    ("output_frequency",        10,0.1, "Output Frequency",    "Hz",  "frequency"),
-    ("output_apparent_power",   11,1,   "Output Apparent Power", "VA", "apparent_power"),
-    ("output_active_power",     12,1,   "Load Power",          "W",   "power"),
-    ("load",                    13,1,   "Load",                "%",   None),
+    # --- Live readings (dynamic block PS4Z) ---
+    ("state",                    "PS4Z", 0, 1,   "State",                      None, None,             None),
+    ("pv_voltage",               "PS4Z", 1, 0.1, "PV Voltage",                 "V",  "voltage",        None),
+    ("grid_voltage",             "PS4Z", 2, 0.1, "Grid Voltage",               "V",  "voltage",        None),
+    ("grid_frequency",           "PS4Z", 3, 0.1, "Grid Frequency",             "Hz", "frequency",      None),
+    ("pv_power",                 "PS4Z", 4, 1,   "PV Power",                   "W",  "power",          None),
+    ("battery_voltage",          "PS4Z", 5, 0.1, "Battery Voltage",            "V",  "voltage",        None),
+    ("battery_soc",              "PS4Z", 6, 1,   "Battery SOC",                "%",  "battery",        None),
+    ("battery_charge_current",   "PS4Z", 7, 1,   "Battery Charge Current",     "A",  "current",        None),
+    ("battery_discharge_current","PS4Z", 8, 1,   "Battery Discharge Current",  "A",  "current",        None),
+    ("output_voltage",           "PS4Z", 9, 0.1, "Output Voltage",             "V",  "voltage",        None),
+    ("output_frequency",         "PS4Z", 10,0.1, "Output Frequency",           "Hz", "frequency",      None),
+    ("output_apparent_power",    "PS4Z", 11,1,   "Output Apparent Power",      "VA", "apparent_power", None),
+    ("output_active_power",      "PS4Z", 12,1,   "Output Active Power",         "W",  "power",          None),
+    ("load",                     "PS4Z", 13,1,   "Load",                       "%",  None,             None),
+    # --- Live reading (from the Sgx0 block) ---
+    ("inverter_temperature",     "Sgx0", 21,1,   "Inverter Temperature",       "°C", "temperature",    None),
+    # --- Specs / nominal ratings (read-only) ---
+    ("rated_active_power",       "hIg6", 0, 1,   "Rated Active Power",          "W",  "power",          "config"),
+    ("rated_apparent_power",     "hIg6", 1, 1,   "Rated Apparent Power",        "VA", "apparent_power", "config"),
+    ("nominal_ac_voltage",       "hIg6", 2, 1,   "Nominal AC Voltage",         "V",  "voltage",        "config"),
+    ("nominal_ac_current",       "hIg6", 3, 1,   "Nominal AC Current",         "A",  "current",        "config"),
+    ("nominal_battery_voltage",  "hIg6", 4, 0.1, "Nominal Battery Voltage",    "V",  "voltage",        "config"),
+    ("rated_output_voltage",     "hIg6", 5, 1,   "Rated Output Voltage",       "V",  "voltage",        "config"),
+    ("rated_output_frequency",   "hIg6", 6, 0.1, "Rated Output Frequency",     "Hz", "frequency",      "config"),
+    ("rated_output_current",     "hIg6", 7, 1,   "Rated Output Current",       "A",  "current",        "config"),
+    # --- Charge / battery settings (read-only) ---
+    ("max_charge_current",       "Sgx0", 5, 1,   "Max Charge Current",         "A",  "current",        "config"),
+    ("max_utility_charge_current","Sgx0",7, 1,   "Max Utility Charge Current", "A",  "current",        "config"),
+    ("comeback_utility_voltage", "Sgx0", 8, 0.1, "Back-to-Utility Voltage",    "V",  "voltage",        "config"),
+    ("comeback_battery_voltage", "Sgx0", 9, 0.1, "Back-to-Battery Voltage",    "V",  "voltage",        "config"),
+    ("bulk_charging_voltage",    "Sgx0", 10,0.1, "Bulk Charging Voltage",      "V",  "voltage",        "config"),
+    ("float_charging_voltage",   "Sgx0", 11,0.1, "Float Charging Voltage",     "V",  "voltage",        "config"),
+    ("battery_cutoff_voltage",   "Sgx0", 12,0.1, "Battery Cut-off Voltage",    "V",  "voltage",        "config"),
+    ("equalization_voltage",     "Sgx0", 13,0.1, "Equalization Voltage",       "V",  "voltage",        "config"),
+    ("equalization_time",        "Sgx0", 14,1,   "Equalization Time",          "min",None,             "config"),
+    ("equalization_timeout",     "Sgx0", 15,1,   "Equalization Timeout",       "min",None,             "config"),
+    ("equalization_interval",    "Sgx0", 16,1,   "Equalization Interval",      "d",  None,             "config"),
 ]
 
 # ----------------------------------------------------------------------------
@@ -270,18 +299,24 @@ class Bridge:
             rtopic = topic.replace("/pub/", "/sub/") + "_reply"
             self.pub(rtopic, {"c":ci, "t":t, "s":rnd(9),
                               "i": (i+1) if isinstance(i, int) else i, "e":0})
-        # Decode data (first block = dynamic)
+        # Decode data. b.ct is a list of blocks, each {cn: name, co: b64 modbus}.
+        # PS4Z = live values; hIg6 = nominal ratings; Sgx0 = settings (+ NTC temp).
         if isinstance(b, dict) and isinstance(b.get("ct"), list) and b["ct"]:
-            regs = decode_block(b["ct"][0].get("co", ""))
-            if regs:
-                self.publish_values(regs)
+            blocks = {}
+            for blk in b["ct"]:
+                regs = decode_block(blk.get("co", ""))
+                if regs:
+                    blocks[blk.get("cn")] = regs
+            if blocks:
+                self.publish_values(blocks)
 
-    def publish_values(self, regs):
+    def publish_values(self, blocks):
         if not self.discovery_done:
             self.announce()
         state = {}
-        for key, idx, factor, *_ in SENSORS:
-            if idx < len(regs):
+        for key, block, idx, factor, *_ in SENSORS:
+            regs = blocks.get(block)
+            if regs and idx < len(regs):
                 v = regs[idx] * factor
                 state[key] = round(v, 2) if isinstance(factor, float) else v
         self.cli.publish("rwb1/state", json.dumps(state), retain=True)
@@ -296,12 +331,19 @@ class Bridge:
 
     def announce(self):
         dev = self.device()
-        for key, idx, factor, name, unit, dclass in SENSORS:
+        for key, block, idx, factor, name, unit, dclass, category in SENSORS:
             cfg = {"name": name, "unique_id": f"rwb1_{key}",
                    "state_topic": "rwb1/state", "value_template": "{{ value_json." + key + " }}",
                    "device": dev}
             if unit: cfg["unit_of_measurement"] = unit
-            if dclass: cfg["device_class"] = dclass; cfg["state_class"] = "measurement"
+            if dclass: cfg["device_class"] = dclass
+            if category == "config":
+                # Read-only setting/spec: HA groups these under "Diagnostic",
+                # clearly apart from the live readings. (Still just a sensor —
+                # nothing on the inverter can be changed from Home Assistant.)
+                cfg["entity_category"] = "diagnostic"
+            elif dclass:
+                cfg["state_class"] = "measurement"
             self.cli.publish(f"homeassistant/sensor/rwb1/{key}/config",
                              json.dumps(cfg), retain=True)
         self.discovery_done = True
