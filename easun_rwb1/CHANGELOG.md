@@ -4,6 +4,10 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.1.9
+
+- Transparent background; smaller Wi-Fi symbol; vertical wordmark now reads top-to-bottom.
+
 ## 0.1.8
 
 - Redraw the icon/logo to match the real RWB1 label: status LEDs in a vertical

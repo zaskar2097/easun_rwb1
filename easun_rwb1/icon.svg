@@ -7,9 +7,6 @@
     </linearGradient>
   </defs>
 
-  <!-- soft rounded background -->
-  <rect x="8" y="8" width="240" height="240" rx="44" fill="#f4f7fa"/>
-
   <!-- ===== RJ45 connector (top) ===== -->
   <g stroke="#1f2328" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
     <rect x="104" y="30" width="48" height="46" rx="6" fill="#dfe8ee"/>
@@ -36,15 +33,15 @@
   <circle cx="110" cy="148" r="5" fill="#1a4fa0" stroke="#1f2328" stroke-width="2"/>
   <circle cx="110" cy="163" r="5" fill="#cfd8df" stroke="#1f2328" stroke-width="2"/>
 
-  <!-- ===== LEFT-BOTTOM: wifi fan ===== -->
-  <g fill="none" stroke="#1f2328" stroke-width="3" stroke-linecap="round">
-    <path d="M100 188 A12 12 0 0 1 120 188"/>
-    <path d="M105 192 A6.5 6.5 0 0 1 115 192"/>
+  <!-- ===== LEFT-BOTTOM: wifi fan (smaller) ===== -->
+  <g fill="none" stroke="#1f2328" stroke-width="2.6" stroke-linecap="round">
+    <path d="M104 189 A9 9 0 0 1 116 189"/>
+    <path d="M107 192.5 A5 5 0 0 1 113 192.5"/>
   </g>
-  <circle cx="110" cy="196" r="2.5" fill="#1f2328"/>
+  <circle cx="110" cy="195.5" r="2.2" fill="#1f2328"/>
 
-  <!-- ===== RIGHT: vertical wordmark (rotated, reads bottom-to-top) ===== -->
+  <!-- ===== RIGHT: vertical wordmark (rotated 90°, reads top-to-bottom) ===== -->
   <text x="144" y="156" text-anchor="middle"
         font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700"
-        fill="#1a4fa0" transform="rotate(-90 144 156)">Solar Plug-RWB1</text>
+        fill="#1a4fa0" transform="rotate(90 144 156)">Solar Plug-RWB1</text>
 </svg>
