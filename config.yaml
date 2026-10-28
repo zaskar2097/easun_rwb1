@@ -1,0 +1,54 @@
+name: EASUN RWB1 Local Bridge
+version: "0.1.0"
+slug: easun_rwb1
+description: >-
+  Serve o dongle EASUN RWB1 (Siseli) localmente — responde ao DNS e ao
+  bootstrap HTTP e publica os dados do inversor no Home Assistant via MQTT,
+  sem cloud e sem internet.
+url: "https://github.com/local/rwb1-local-bridge"
+arch:
+  - aarch64
+  - armv7
+  - armhf
+  - amd64
+  - i386
+init: false
+host_network: true
+startup: services
+boot: auto
+# Precisa do broker MQTT (Mosquitto) para publicar os sensores e trocar
+# mensagens com o dongle.
+services:
+  - mqtt:want
+ports:
+  "8553/udp": 8553
+  "80/tcp": 80
+ports_description:
+  "8553/udp": "DNS — responde aos domínios da cloud com o IP do Pi (porta alta p/ não colidir com o 53)"
+  "80/tcp": "HTTP — serve o bootstrap do dongle (checkin/findSingle/servers)"
+options:
+  pi_ip: ""
+  mqtt_host: "127.0.0.1"
+  mqtt_port: 1883
+  mqtt_user: ""
+  mqtt_password: ""
+  override_substr: "siseli"
+  dns_port: 8553
+  dns_upstream: "1.1.1.1"
+  refresh_interval: 20
+  report_period_ms: 60000
+  dev_sn: "REDACTED-SERIAL"
+  log_level: "info"
+schema:
+  pi_ip: "str?"
+  mqtt_host: "str"
+  mqtt_port: "port"
+  mqtt_user: "str?"
+  mqtt_password: "password?"
+  override_substr: "str"
+  dns_port: "port"
+  dns_upstream: "str"
+  refresh_interval: "int(0,3600)"
+  report_period_ms: "int(10000,600000)"
+  dev_sn: "str"
+  log_level: "list(debug|info|warning|error)"

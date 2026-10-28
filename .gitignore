@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Home Assistant add-on runtime / dados locais
+/data/
+options.json
+
+# Capturas e logs de laboratório (não publicar)
+*.log
+*.pcap
+mqtt_capture*
+*_capture*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editores
+.idea/
+.vscode/
+*.swp
