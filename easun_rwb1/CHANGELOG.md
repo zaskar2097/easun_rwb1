@@ -4,6 +4,11 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.1.13
+
+- Add a "Restart dongle" button (MQTT discovery) that sends the dongle the
+  cloud restart command (dtu_rpc i=2603).
+
 ## 0.1.12
 
 - Fix: the active pull (`refresh_interval`) could stall after an add-on restart

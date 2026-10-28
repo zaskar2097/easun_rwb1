@@ -177,6 +177,14 @@ Example: `<DONGLE_IP>=192.168.10.134`, `<PI_IP>=192.168.10.251`.
 
 ---
 
+## Restarting the dongle from Home Assistant
+
+The add-on exposes a **Restart dongle** button on the **EASUN RWB1** device
+(MQTT discovery). Pressing it sends the dongle the same restart command the cloud
+used (`dtu_rpc` `i=2603`), so you can power-cycle the dongle remotely without
+touching it. The dongle needs to have spoken at least once (so its *DtuID* is
+known) — set the `dtu_id` option to make the button work right after a restart.
+
 ## Troubleshooting
 
 - **No `HTTP checkin` in the log:** the dongle's DNS isn't reaching the Pi.

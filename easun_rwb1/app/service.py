@@ -221,11 +221,24 @@ class Bridge:
         threading.Thread(target=self.refresher, daemon=True).start()
 
     def on_connect(self, c, u, f, rc):
-        log.info("MQTT connected (rc=%s). Subscribing dtu/+/pub/#", rc)
+        log.info("MQTT connected (rc=%s). Subscribing dtu/+/pub/# and rwb1/cmd/#", rc)
         c.subscribe("dtu/+/pub/#")
+        c.subscribe("rwb1/cmd/#")
+        self.announce_button()
 
     def pub(self, topic, obj):
         self.cli.publish(topic, b"\x00" + json.dumps(obj, separators=(",", ":")).encode())
+
+    def device(self):
+        return {"identifiers": ["rwb1"], "name": "EASUN RWB1",
+                "manufacturer": "EASUN / Siseli", "model": "RWB1"}
+
+    def send_restart(self):
+        if not self.dtu_id:
+            log.warning("Restart pedido mas DtuID ainda desconhecido"); return
+        self.pub(f"dtu/{self.dtu_id}/sub/service/dtu_rpc",
+                 {"c": random.randint(10, 99), "t": rnd(8), "s": rnd(9), "i": 2603})
+        log.info("Restart enviado ao dongle (dtu_rpc i=2603)")
 
     def refresher(self):
         if REFRESH <= 0: return
@@ -237,6 +250,9 @@ class Bridge:
 
     def on_message(self, c, u, msg):
         topic = msg.topic
+        # Comandos vindos do Home Assistant (botoes)
+        if topic == "rwb1/cmd/restart":
+            self.send_restart(); return
         parts = topic.split("/")
         if len(parts) > 1 and parts[0] == "dtu":
             self.dtu_id = parts[1]
@@ -270,9 +286,15 @@ class Bridge:
         self.cli.publish("rwb1/state", json.dumps(state), retain=True)
         log.debug("state: %s", state)
 
+    def announce_button(self):
+        cfg = {"name": "Restart dongle", "unique_id": "rwb1_restart",
+               "command_topic": "rwb1/cmd/restart", "payload_press": "PRESS",
+               "icon": "mdi:restart", "device": self.device()}
+        self.cli.publish("homeassistant/button/rwb1/restart/config",
+                         json.dumps(cfg), retain=True)
+
     def announce(self):
-        dev = {"identifiers": [f"rwb1_{self.dtu_id or 'dtu'}"], "name": "EASUN RWB1",
-               "manufacturer": "EASUN / Siseli", "model": "RWB1"}
+        dev = self.device()
         for key, idx, factor, name, unit, dclass in SENSORS:
             cfg = {"name": name, "unique_id": f"rwb1_{key}",
                    "state_topic": "rwb1/state", "value_template": "{{ value_json." + key + " }}",
