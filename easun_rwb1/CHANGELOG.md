@@ -6,30 +6,9 @@ project uses [semantic versioning](https://semver.org/).
 
 ## 0.1.11
 
-- Smaller Wi-Fi symbol, clear of the left border.
-
-## 0.1.10
-
-- Even spacing between the Wi-Fi arcs; a bit more margin around the wordmark.
-
-## 0.1.9
-
-- Transparent background; smaller Wi-Fi symbol; vertical wordmark now reads top-to-bottom.
-
-## 0.1.8
-
-- Redraw the icon/logo to match the real RWB1 label: status LEDs in a vertical
-  column on the left, Wi-Fi fan below them, and a vertical "Solar Plug-RWB1"
-  wordmark on the right.
-
-## 0.1.7
-
-- Redraw the Wi-Fi symbol on the icon/logo as a proper symmetric fan.
-
-## 0.1.6
-
-- New flat line-art icon and logo (a drawing of the RWB1 dongle, in EASUN
-  colours). The vector source is included as `icon.svg`.
+- Flat line-art icon and logo drawn after the real RWB1 dongle (EASUN colours):
+  status LEDs in a vertical column, Wi-Fi fan, and a vertical "Solar Plug-RWB1"
+  wordmark. Vector source included as `icon.svg`.
 
 ## 0.1.5
 
@@ -52,7 +31,6 @@ project uses [semantic versioning](https://semver.org/).
 
 ## 0.1.1
 
-- Add the add-on icon (inverter photo) and logo.
 - `dev_sn` is now a user-provided option (empty by default); no serial number is
   shipped in the repository.
 
