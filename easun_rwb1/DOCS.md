@@ -91,12 +91,20 @@ Assistant users by default.)
 
 ### Mosquitto: accept the **dongle**
 
-The dongle connects to Mosquitto with these (fixed) credentials of its own:
+The dongle connects to Mosquitto with its own **fixed** credentials (not a Home
+Assistant account):
 
 - **username:** your *DtuID* (the number shown in the Siseli app / the dongle's interface)
-- **password:** the dongle's *hash*
+- **password:** the dongle's *hash* (a 32-character MD5 string)
 
-Add them to Mosquitto. In the **Mosquitto broker → Configuration** add-on:
+> **"I have no `logins` set — isn't the broker anonymous already?"** No. HA's
+> Mosquitto always accepts **Home Assistant user accounts** (that's how your other
+> integrations connect), but `anonymous` is `false` by default. The dongle is
+> *not* an HA account, so with an empty `logins` list it would be **rejected**.
+> You must add it explicitly (below). Doing so does not affect your existing
+> HA-account integrations.
+
+Add it in the **Mosquitto broker → Configuration** add-on:
 
 ```yaml
 logins:
@@ -104,9 +112,28 @@ logins:
     password: "<THE_DONGLE_HASH>"
 ```
 
-> Don't know the hash? With the add-on at `log_level: debug` and the dongle
-> trying to connect, Mosquitto logs the login attempt with the username (DtuID).
-> As a last resort, temporarily enable `anonymous: true` in Mosquitto just to get started.
+Then save and **restart the Mosquitto add-on**.
+
+#### How to obtain the DtuID and the hash
+
+The dongle sends both to the cloud on every boot, as an **HTTP Basic auth**
+header (`Authorization: Basic base64(DtuID:hash)`) during the bootstrap. The
+reliable way to read them is to capture that first HTTP request and decode the
+header. If you captured the bootstrap while reverse-engineering (e.g. an
+`http_capture.log`), decode it with:
+
+```sh
+grep -ai "authorization: basic" http_capture.log \
+  | head -1 | sed -E 's/.*[Bb]asic //I' | tr -d '\r\n ' | base64 -d; echo
+# -> 00000000000000000000:0123456789abcdef0123456789abcdef   (DtuID:hash)
+```
+
+The DtuID alone is also visible in the Siseli app and on the dongle's own web
+interface; only the hash needs to be recovered from the bootstrap.
+
+> Alternative (less secure): temporarily set `anonymous: true` in Mosquitto to
+> get the dongle connected without knowing the hash. This opens the broker to any
+> client on your LAN, so prefer the explicit `logins` entry above.
 
 ---
 
