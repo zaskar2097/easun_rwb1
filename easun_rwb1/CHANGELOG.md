@@ -4,6 +4,12 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.1.8
+
+- Redraw the icon/logo to match the real RWB1 label: status LEDs in a vertical
+  column on the left, Wi-Fi fan below them, and a vertical "Solar Plug-RWB1"
+  wordmark on the right.
+
 ## 0.1.7
 
 - Redraw the Wi-Fi symbol on the icon/logo as a proper symmetric fan.

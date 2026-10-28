@@ -30,21 +30,21 @@
   <rect x="98" y="104" width="60" height="104" rx="10"
         fill="#eef3f7" stroke="#1f2328" stroke-width="3.5"/>
 
-  <!-- RWB1 wordmark (centered, top of panel) -->
-  <text x="128" y="128" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
-        font-size="16" font-weight="700" fill="#1a4fa0">RWB1</text>
-  <line x1="108" y1="138" x2="148" y2="138" stroke="#1f2328" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- ===== LEFT: status LEDs (vertical column) ===== -->
+  <circle cx="110" cy="118" r="5" fill="#5aa832" stroke="#1f2328" stroke-width="2"/>
+  <circle cx="110" cy="133" r="5" fill="#1a4fa0" stroke="#1f2328" stroke-width="2"/>
+  <circle cx="110" cy="148" r="5" fill="#1a4fa0" stroke="#1f2328" stroke-width="2"/>
+  <circle cx="110" cy="163" r="5" fill="#cfd8df" stroke="#1f2328" stroke-width="2"/>
 
-  <!-- status LEDs (horizontal row) -->
-  <circle cx="110" cy="158" r="5.5" fill="#5aa832" stroke="#1f2328" stroke-width="2"/>
-  <circle cx="122" cy="158" r="5.5" fill="#1a4fa0" stroke="#1f2328" stroke-width="2"/>
-  <circle cx="134" cy="158" r="5.5" fill="#1a4fa0" stroke="#1f2328" stroke-width="2"/>
-  <circle cx="146" cy="158" r="5.5" fill="#cfd8df" stroke="#1f2328" stroke-width="2"/>
-
-  <!-- wifi fan (centered, bottom of panel) -->
-  <g fill="none" stroke="#5aa832" stroke-width="3.6" stroke-linecap="round">
-    <path d="M112 185 A19 19 0 0 1 144 185"/>
-    <path d="M119 190 A11 11 0 0 1 137 190"/>
+  <!-- ===== LEFT-BOTTOM: wifi fan ===== -->
+  <g fill="none" stroke="#1f2328" stroke-width="3" stroke-linecap="round">
+    <path d="M100 188 A12 12 0 0 1 120 188"/>
+    <path d="M105 192 A6.5 6.5 0 0 1 115 192"/>
   </g>
-  <circle cx="128" cy="195" r="2.8" fill="#5aa832"/>
+  <circle cx="110" cy="196" r="2.5" fill="#1f2328"/>
+
+  <!-- ===== RIGHT: vertical wordmark (rotated, reads bottom-to-top) ===== -->
+  <text x="144" y="156" text-anchor="middle"
+        font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700"
+        fill="#1a4fa0" transform="rotate(-90 144 156)">Solar Plug-RWB1</text>
 </svg>
