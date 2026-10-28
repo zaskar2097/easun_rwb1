@@ -48,7 +48,7 @@ DNS_PORT     = int(opt("dns_port", 8553))
 UPSTREAM     = (opt("dns_upstream", "1.1.1.1"), 53)
 REFRESH      = int(opt("refresh_interval", 20))
 REPORT_MS    = int(opt("report_period_ms", 60000))
-DEV_SN       = opt("dev_sn", "REDACTED-SERIAL")
+DEV_SN       = opt("dev_sn", "")
 
 log.info("RWB1 bridge: PI_IP=%s MQTT=%s:%s override=*%s* refresh=%ss",
          PI_IP, MQTT_HOST, MQTT_PORT, OVERRIDE, REFRESH)

@@ -56,7 +56,7 @@ All options are set in the add-on's **Configuration** tab.
 | `dns_upstream` | DNS to forward all other queries to. | `1.1.1.1` |
 | `refresh_interval` | Seconds between read requests to the dongle (0 = disabled). | `20` |
 | `report_period_ms` | Autonomous reporting period the add-on tells the dongle to use. | `60000` |
-| `dev_sn` | Serial number returned in the bootstrap (the default is fine). | `REDACTED-SERIAL` |
+| `dev_sn` | Your inverter's serial number, returned in the bootstrap. Set it to your own value (kept only in the local add-on options). | `<inverter-serial>` |
 | `log_level` | Log verbosity (`debug` helps on first boot). | `info` |
 
 ### Mosquitto: create the add-on user

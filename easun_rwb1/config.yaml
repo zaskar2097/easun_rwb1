@@ -37,7 +37,7 @@ options:
   dns_upstream: "1.1.1.1"
   refresh_interval: 20
   report_period_ms: 60000
-  dev_sn: "REDACTED-SERIAL"
+  dev_sn: ""
   log_level: "info"
 schema:
   pi_ip: "str?"
@@ -50,5 +50,5 @@ schema:
   dns_upstream: "str"
   refresh_interval: "int(0,3600)"
   report_period_ms: "int(10000,600000)"
-  dev_sn: "str"
+  dev_sn: "str?"
   log_level: "list(debug|info|warning|error)"
