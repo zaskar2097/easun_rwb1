@@ -236,9 +236,10 @@ class Bridge:
     def send_restart(self):
         if not self.dtu_id:
             log.warning("Restart pedido mas DtuID ainda desconhecido"); return
+        # 'c' e um codigo do tipo de comando (nao um contador): dtu_rpc restart = 26.
         self.pub(f"dtu/{self.dtu_id}/sub/service/dtu_rpc",
-                 {"c": random.randint(10, 99), "t": rnd(8), "s": rnd(9), "i": 2603})
-        log.info("Restart enviado ao dongle (dtu_rpc i=2603)")
+                 {"c": 26, "t": rnd(8), "s": rnd(9), "i": 2603})
+        log.info("Restart enviado ao dongle (dtu_rpc c=26 i=2603)")
 
     def refresher(self):
         if REFRESH <= 0: return

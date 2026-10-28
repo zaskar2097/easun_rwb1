@@ -4,6 +4,11 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.1.14
+
+- Fix the Restart button: the dtu_rpc command field `c` is a command-type code
+  (26 for restart), not a random counter, so the dongle now acts on it.
+
 ## 0.1.13
 
 - Add a "Restart dongle" button (MQTT discovery) that sends the dongle the
