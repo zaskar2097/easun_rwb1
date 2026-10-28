@@ -4,6 +4,10 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.1.11
+
+- Smaller Wi-Fi symbol, clear of the left border.
+
 ## 0.1.10
 
 - Even spacing between the Wi-Fi arcs; a bit more margin around the wordmark.

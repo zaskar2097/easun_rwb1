@@ -34,11 +34,11 @@
   <circle cx="110" cy="163" r="5" fill="#cfd8df" stroke="#1f2328" stroke-width="2"/>
 
   <!-- ===== LEFT-BOTTOM: wifi fan (concentric, even spacing) ===== -->
-  <g fill="none" stroke="#1f2328" stroke-width="2.4" stroke-linecap="round">
-    <path d="M101.6 187.4 A11.5 11.5 0 0 1 118.4 187.4"/>
-    <path d="M105.4 191.2 A6.5 6.5 0 0 1 114.6 191.2"/>
+  <g fill="none" stroke="#1f2328" stroke-width="2.3" stroke-linecap="round">
+    <path d="M104.6 190.2 A9 9 0 0 1 118.4 190.2"/>
+    <path d="M107.6 192.8 A5 5 0 0 1 114.6 192.8"/>
   </g>
-  <circle cx="110" cy="196" r="2" fill="#1f2328"/>
+  <circle cx="111.5" cy="196" r="2" fill="#1f2328"/>
 
   <!-- ===== RIGHT: vertical wordmark (rotated 90°, reads top-to-bottom) ===== -->
   <text x="145" y="156" text-anchor="middle"
