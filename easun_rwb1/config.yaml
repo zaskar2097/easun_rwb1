@@ -1,5 +1,5 @@
 name: EASUN RWB1 Local Bridge
-version: "0.1.0"
+version: "0.1.1"
 slug: easun_rwb1
 description: >-
   Serve the EASUN RWB1 (Siseli) dongle locally — answers DNS and the HTTP
