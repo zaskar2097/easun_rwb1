@@ -1,5 +1,5 @@
 name: EASUN RWB1 Local Bridge
-version: "0.1.11"
+version: "0.1.12"
 slug: easun_rwb1
 description: >-
   Serve the EASUN RWB1 (Siseli) dongle locally — answers DNS and the HTTP
@@ -38,6 +38,7 @@ options:
   refresh_interval: 20
   report_period_ms: 60000
   dev_sn: ""
+  dtu_id: ""
   log_level: "info"
 schema:
   pi_ip: "str?"
@@ -51,4 +52,5 @@ schema:
   refresh_interval: "int(0,3600)"
   report_period_ms: "int(10000,600000)"
   dev_sn: "str?"
+  dtu_id: "str?"
   log_level: "list(debug|info|warning|error)"

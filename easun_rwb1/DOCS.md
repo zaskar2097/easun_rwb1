@@ -57,6 +57,7 @@ All options are set in the add-on's **Configuration** tab.
 | `refresh_interval` | *Pull* — seconds between active read requests the add-on sends to the dongle (0 = disabled). See below. | `20` |
 | `report_period_ms` | *Push* — autonomous reporting period the add-on tells the dongle to use. See below. | `60000` |
 | `dev_sn` | Your inverter's serial number, returned in the bootstrap. Set it to your own value (kept only in the local add-on options). | `<inverter-serial>` |
+| `dtu_id` | Your dongle's *DtuID*. Optional: the add-on also learns it from the dongle's bootstrap/traffic. Set it so the active *pull* starts immediately after an add-on restart (otherwise the first pull waits for the dongle to speak). | `<your-DtuID>` |
 | `log_level` | Log verbosity (`debug` helps on first boot). | `info` |
 
 ### Reading cadence: `refresh_interval` vs `report_period_ms`

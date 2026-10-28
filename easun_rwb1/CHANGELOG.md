@@ -4,6 +4,13 @@ All notable changes to the **EASUN RWB1 Local Bridge** add-on are documented her
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and the
 project uses [semantic versioning](https://semver.org/).
 
+## 0.1.12
+
+- Fix: the active pull (`refresh_interval`) could stall after an add-on restart
+  until the dongle spoke, because the DtuID was only learned from incoming MQTT.
+  The add-on now also learns the DtuID from the HTTP bootstrap and accepts a
+  `dtu_id` option, so the pull starts immediately.
+
 ## 0.1.11
 
 - Flat line-art icon and logo drawn after the real RWB1 dongle (EASUN colours):

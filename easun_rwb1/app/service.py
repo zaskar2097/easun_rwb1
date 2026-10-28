@@ -49,6 +49,11 @@ UPSTREAM     = (opt("dns_upstream", "1.1.1.1"), 53)
 REFRESH      = int(opt("refresh_interval", 20))
 REPORT_MS    = int(opt("report_period_ms", 60000))
 DEV_SN       = opt("dev_sn", "")
+DTU_ID_OPT   = opt("dtu_id", "")
+
+# Referencia global para a bridge, para o servidor HTTP poder ensinar-lhe o DtuID
+# aprendido no bootstrap (sem esperar pela 1a mensagem MQTT do dongle).
+BRIDGE = None
 
 log.info("RWB1 bridge: PI_IP=%s MQTT=%s:%s override=*%s* refresh=%ss",
          PI_IP, MQTT_HOST, MQTT_PORT, OVERRIDE, REFRESH)
@@ -150,8 +155,24 @@ class Boot(BaseHTTPRequestHandler):
     def _read_body(self):
         n = int(self.headers.get("Content-Length", 0) or 0)
         if n: self.rfile.read(n)
+    def _learn_dtu_id(self):
+        # DtuID vem no cabecalho Basic (base64 de "DtuID:hash") do bootstrap.
+        auth = self.headers.get("Authorization", "")
+        if not auth.lower().startswith("basic ") or BRIDGE is None or BRIDGE.dtu_id:
+            return
+        import base64
+        try:
+            dec = base64.b64decode(auth.split(None, 1)[1]).decode(errors="replace")
+            uid = dec.split(":", 1)[0].strip()
+            if uid:
+                BRIDGE.dtu_id = uid
+                log.info("DtuID aprendido do bootstrap HTTP: %s", uid)
+        except Exception:
+            pass
+
     def do_POST(self):
         self._read_body()
+        self._learn_dtu_id()
         if self.path.startswith("/dtu/checkin"):
             log.info("HTTP checkin")
             self._json({"code":0,"msg":"Success","data":{
@@ -182,7 +203,7 @@ def http_server():
 # ----------------------------------------------------------------------------
 class Bridge:
     def __init__(self):
-        self.dtu_id = None
+        self.dtu_id = DTU_ID_OPT or None
         self.discovery_done = False
         self.cli = mqtt.Client(client_id="rwb1_bridge_" + rnd(4))
         if MQTT_USER:
@@ -265,9 +286,13 @@ class Bridge:
 
 # ----------------------------------------------------------------------------
 def main():
+    global BRIDGE
+    BRIDGE = Bridge()
+    if BRIDGE.dtu_id:
+        log.info("DtuID das opcoes: %s (pull arranca de imediato)", BRIDGE.dtu_id)
     threading.Thread(target=dns_server, daemon=True).start()
     threading.Thread(target=http_server, daemon=True).start()
-    Bridge().start()
+    BRIDGE.start()
     while True:
         time.sleep(3600)
 
